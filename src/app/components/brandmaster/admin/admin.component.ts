@@ -65,9 +65,9 @@ export class AdminComponent implements OnInit {
         });
 
         //foreach user, check amount of punishment stripes
-        this.dayService.getStripesForOneDayForOneUser({ id: user.id, date: new Date(1900, 1).toUTCString() }).subscribe(totalpunishmentstripes => {
-          if (totalpunishmentstripes) {
-            this.alluserpunishmentstripes.push({ user: user, stripetotal: totalpunishmentstripes.stripes });
+        this.dayService.getStripesForOneUser({ id: user.id, date: new Date(1900, 1).toUTCString() }).subscribe(totalpunishmentstripes => {
+          if (totalpunishmentstripes[0]) {
+            this.alluserpunishmentstripes.push({ user: user, stripetotal: totalpunishmentstripes[0].stripes });
           }
           else {
             this.alluserpunishmentstripes.push({ user: user, stripetotal: 0 });

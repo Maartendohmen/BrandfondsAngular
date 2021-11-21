@@ -72,9 +72,9 @@ export class MainmenuComponent implements OnInit {
 
     if (this.personalstripesnumber > 0) {
       this.dayService.removeStripeForUser({ id: this.loggedinUser.id, date: this.selectedDate.toUTCString() }).subscribe(data => {
-        this.dayService.getStripesForOneDayForOneUser({ id: this.loggedinUser.id, date: this.selectedDate.toUTCString() }).subscribe(day => {
-          if (day) { //if day still exist after striping
-            this.personalstripesnumber = day.stripes;
+        this.dayService.getStripesForOneUser({ id: this.loggedinUser.id, date: this.selectedDate.toUTCString() }).subscribe(days => {
+          if (days[0]) { //if day still exist after striping
+            this.personalstripesnumber = days[0].stripes;
           }
           else {
             this.personalstripesnumber = 0;
@@ -91,8 +91,8 @@ export class MainmenuComponent implements OnInit {
   AddStripe(e) {
 
     this.dayService.addStripeForUser({ id: this.loggedinUser.id, date: this.selectedDate.toUTCString() }).subscribe(data => {
-      this.dayService.getStripesForOneDayForOneUser({ id: this.loggedinUser.id, date: this.selectedDate.toUTCString() }).subscribe(day => {
-        this.personalstripesnumber = day.stripes;
+      this.dayService.getStripesForOneUser({ id: this.loggedinUser.id, date: this.selectedDate.toUTCString() }).subscribe(days => {
+        this.personalstripesnumber = days[0].stripes;
 
         this.RefreshTotalStripesFromUser();
         this.RefreshSaldoFromUser();
@@ -110,9 +110,9 @@ export class MainmenuComponent implements OnInit {
     //correction for month enum starting at 0
     this.selectedDate.setMonth(this.selectedDate.getMonth() - 1);
 
-    this.dayService.getStripesForOneDayForOneUser({ id: this.loggedinUser.id, date: this.selectedDate.toUTCString() }).subscribe(day => {
-      if (day != null) { //if day still exist after striping
-        this.personalstripesnumber = day.stripes;
+    this.dayService.getStripesForOneUser({ id: this.loggedinUser.id, date: this.selectedDate.toUTCString() }).subscribe(days => {
+      if (days[0]) { //if day still exist after striping
+        this.personalstripesnumber = days[0].stripes;
       }
       else {
         this.personalstripesnumber = 0;
@@ -130,11 +130,11 @@ export class MainmenuComponent implements OnInit {
       var selecteduser = this.allusers.find(x => x.id == this.selectedUserID);
 
       //determain stripe count on current day
-      this.dayService.getStripesForOneDayForOneUser({ id: selecteduser.id, date: this.selectedDate.toString() }).subscribe(data => {
+      this.dayService.getStripesForOneUser({ id: selecteduser.id, date: this.selectedDate.toString() }).subscribe(days => {
 
-        if (data != null) {
+        if (days[0]) {
           //add user to list
-          this.selectedUsers.set(selecteduser, data.stripes);
+          this.selectedUsers.set(selecteduser, days[0].stripes);
         }
         else {
           this.selectedUsers.set(selecteduser, 0);
@@ -169,9 +169,9 @@ export class MainmenuComponent implements OnInit {
   AddGroupStripe(user: User) {
 
     this.dayService.addStripeForUser({ id: user.id, date: this.selectedDate.toUTCString() }).subscribe(data => {
-      this.dayService.getStripesForOneDayForOneUser({ id: user.id, date: this.selectedDate.toUTCString() }).subscribe(day => {
+      this.dayService.getStripesForOneUser({ id: user.id, date: this.selectedDate.toUTCString() }).subscribe(days => {
 
-        this.selectedUsers.set(user, day.stripes)
+        this.selectedUsers.set(user, days[0].stripes)
 
         //update own values after transaction
         if (user.id === this.loggedinUser.id) {
@@ -191,9 +191,9 @@ export class MainmenuComponent implements OnInit {
 
     if (this.selectedUsers.get(user) > 0) {
       this.dayService.removeStripeForUser({ id: user.id, date: this.selectedDate.toUTCString() }).subscribe(data => {
-        this.dayService.getStripesForOneDayForOneUser({ id: user.id, date: this.selectedDate.toUTCString() }).subscribe(day => {
-          if (day) { //if day still exist after striping
-            this.selectedUsers.set(user, day.stripes)
+        this.dayService.getStripesForOneUser({ id: user.id, date: this.selectedDate.toUTCString() }).subscribe(days => {
+          if (days[0]) { //if day still exist after striping
+            this.selectedUsers.set(user, days[0].stripes)
           }
           else {
             this.selectedUsers.set(user, 0)
@@ -235,9 +235,9 @@ export class MainmenuComponent implements OnInit {
 
     if (Array.from(this.selectedUsers.keys()).find(x => x.id == this.loggedinUser.id) != undefined) {
       var selecteduser = Array.from(this.selectedUsers.keys()).find(x => x.id == this.loggedinUser.id);
-      this.dayService.getStripesForOneDayForOneUser({ id: selecteduser.id, date: this.selectedDate.toUTCString() }).subscribe(day => {
-        if (day) { //if day still exist after striping
-          this.selectedUsers.set(selecteduser, day.stripes)
+      this.dayService.getStripesForOneUser({ id: selecteduser.id, date: this.selectedDate.toUTCString() }).subscribe(days => {
+        if (days[0]) { //if day still exist after striping
+          this.selectedUsers.set(selecteduser, days[0].stripes)
         }
         else {
           this.selectedUsers.set(selecteduser, 0)
