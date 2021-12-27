@@ -5,61 +5,72 @@
             <h1 class="customheadertext text-center">Bonnetjes</h1>
             <hr class="my-2">
 
-            <form [formGroup]="receiptUploadForm" (ngSubmit)="uploadReceipt()" class="form-group">
+            <form [formGroup]="receiptUploadForm" (ngSubmit)="uploadReceipt()"
+                class="form-group">
 
                 <div class="md-form">
-                    <input mdbInput mdbValidate type="text" id="receipt_description" class="form-control"
+                    <input mdbInput mdbValidate type="text"
+                        id="receipt_description" class="form-control"
                         formControlName="receipt_description"
-                        [ngClass]="{ 'is-invalid': uploading && f.receipt_description.errors }">
+                        [ngClass]="{ 'is-invalid': uploading &&
+                        f.receipt_description.errors }">
                     <label for="receipt_description">Omschrijving bonnetje</label>
                 </div>
 
-
                 <div class="md-form" style="margin-bottom: 5px;">
-                    <input mdbInput mdbValidate type="text" id="receipt_date" class="form-control"
+                    <input mdbInput mdbValidate type="text" id="receipt_date"
+                        class="form-control"
                         formControlName="receipt_date">
                     <label for="receipt_date">Datum betaling (dd-mm-jjjj)</label>
-                    <p style="font-size: small;">*Wanneer leeg zal de huidige datum gebruikt worden
+                    <p style="font-size: small;">*Wanneer leeg zal de huidige
+                        datum gebruikt worden
                     </p>
                 </div>
 
                 <div class="md-form">
-                    <input mdbInput mdbValidate type="text" id="receipt_amount" class="form-control"
+                    <input mdbInput mdbValidate type="text" id="receipt_amount"
+                        class="form-control"
                         formControlName="receipt_amount"
-                        [ngClass]="{ 'is-invalid': uploading && f.receipt_amount.errors }">
+                        [ngClass]="{ 'is-invalid': uploading &&
+                        f.receipt_amount.errors }">
                     <label for="receipt_amount">Bedrag bonnetje (in €)</label>
                 </div>
 
                 <div class="md-form">
                     <input mdbInput mdbValidate type="file" id="receipt_file"
-                        (change)="handleFileInput($event.target.files)" class="form-control"
-                        formControlName="receipt_file" [ngClass]="{ 'is-invalid': uploading && f.receipt_file.errors }">
+                        (change)="handleFileInput($event.target.files)"
+                        class="form-control"
+                        formControlName="receipt_file" [ngClass]="{
+                        'is-invalid': uploading && f.receipt_file.errors }">
                 </div>
 
-
-
-                <button class="btn-block" type="submit" mdbBtn color="primary" mdbWavesEffect>
+                <button class="btn-block" type="submit" mdbBtn color="primary"
+                    mdbWavesEffect>
                     <ng-container *ngIf="!uploading; else isUploading">
                         Upload
                     </ng-container>
                     <ng-template #isUploading>
-                        <span class="spinner-border spinner-border-sm float-right" role="status"
+                        <span class="spinner-border spinner-border-sm
+                            float-right" role="status"
                             aria-hidden="true"></span>
                         Loading...
                     </ng-template>
                 </button>
-
             </form>
 
             <hr class="my-2">
 
-            <table mdbTable mdbTableScroll scrollY="true" maxHeight="300" striped="true">
+            <table mdbTable mdbTableScroll scrollY="true" maxHeight="300"
+                striped="true">
                 <thead class="black white-text">
                     <tr>
                         <th [mdbTableSort]="allreceipts" sortBy="description">Beschrijving</th>
-                        <th [mdbTableSort]="allreceipts" sortBy="paidAmount">Bedrag (€)</th>
-                        <th [mdbTableSort]="allreceipts" sortBy="paidDate">Datum betaald</th>
-                        <th [mdbTableSort]="allreceipts" sortBy="filename">foto naam</th>
+                        <th [mdbTableSort]="allreceipts" sortBy="paidAmount">Bedrag
+                            (€)</th>
+                        <th [mdbTableSort]="allreceipts" sortBy="paidDate">Datum
+                            betaald</th>
+                        <th [mdbTableSort]="allreceipts" sortBy="filename">foto
+                            naam</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -70,16 +81,18 @@
                         <td style="width: 23.3%">
                             {{receipt.paidAmount/100 | number:'.2'}}
                         </td>
-                        <td style="width: 23.3%">{{receipt.paidDate | date: 'longDate'}}</td>
+                        <td style="width: 23.3%">{{receipt.paidDate | date:
+                            'longDate'}}</td>
                         <td style="width: 23.3%">
-                            <p class="clickableImage" (click)="retrieveImage(receipt.filename)">
+                            <p class="clickableImage"
+                                (click)="retrieveImage(receipt.filename)">
                                 {{receipt.filename}}
                             </p>
                         </td>
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
 
+            </div>
         </div>
-    </div>
 
-</div>
+    </div>

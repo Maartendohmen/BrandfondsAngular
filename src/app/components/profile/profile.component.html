@@ -1,0 +1,48 @@
+<div class="row mt-2">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Profiel foto uploaden</h5>
+                <p class="card-text">Gebruik onderstaande knop om een
+                    profielfoto te
+                    uploaden.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-2">
+    <div class="col-12">
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="inputProfilePicture">Upload</span>
+            </div>
+            <div class="custom-file">
+                <input type="file" class="custom-file-input"
+                    id="inputProfilePicture"
+                    aria-describedby="inputProfilePicture"
+                    (change)="fileChangeEvent($event)">
+                <label class="custom-file-label" for="inputProfilePicture">Upload
+                    profielfoto</label>
+            </div>
+        </div>
+
+        <image-cropper
+            class="mt-2"
+            *ngIf="imageChangedEvent"
+            [imageChangedEvent]="imageChangedEvent"
+            [maintainAspectRatio]="true"
+            [aspectRatio]="1 / 1"
+            format="jpeg"
+            (imageCropped)="imageCropped($event)"></image-cropper>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12 mb-2">
+        <button type="button" mdbBtn color="primary" class="btn-block mt-2"
+            (click)="saveCroppedPicture()" [disabled]="!canSubmit"
+            mdbWavesEffect>Sla profielfoto op</button>
+
+    </div>
+</div>

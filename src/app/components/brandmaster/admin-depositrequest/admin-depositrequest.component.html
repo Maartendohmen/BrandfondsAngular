@@ -6,12 +6,16 @@
             <hr class="my-2">
 
 
-            <table mdbTable mdbTableScroll scrollY="true" maxHeight="300" striped="true" class="mt-1">
+            <table mdbTable mdbTableScroll scrollY="true" maxHeight="300"
+                striped="true" class="mt-1">
                 <thead class="black white-text">
                     <tr>
-                        <th [mdbTableSort]="alldepositrequests" sortBy="user.forname">Naam</th>
-                        <th [mdbTableSort]="alldepositrequests" sortBy="amount">Inleg (€)</th>
-                        <th [mdbTableSort]="alldepositrequests" sortBy="requestDate">Aanvraag datum</th>
+                        <th [mdbTableSort]="alldepositrequests"
+                            sortBy="user.forname">Naam</th>
+                        <th [mdbTableSort]="alldepositrequests" sortBy="amount">Inleg
+                            (€)</th>
+                        <th [mdbTableSort]="alldepositrequests"
+                            sortBy="requestDate">Aanvraag datum</th>
                         <th>Accepteer<br>/Weiger</th>
                     </tr>
                 </thead>
@@ -24,23 +28,26 @@
                         <td style="width: 25%">
                             {{depositrequest.amount/100 | number:'.2'}}
                         </td>
-                        <td style="width: 45%">{{depositrequest.requestDate | date: 'longDate'}}</td>
+                        <td style="width: 45%">{{depositrequest.requestDate |
+                            date: 'longDate'}}</td>
                         <td>
-                            <button type="button" class="btn btn-block btn-success btn-rounded btn-sm"
+                            <button type="button" class="btn btn-block
+                                btn-success btn-rounded btn-sm"
                                 (click)="AcceptRepositRequest(depositrequest.id)">
                                 <mdb-icon fas icon="check"></mdb-icon>
                             </button>
 
-                            <button type="button" class="btn btn-block btn-danger btn-rounded btn-sm mt-2"
+                            <button type="button" class="btn btn-block
+                                btn-danger btn-rounded btn-sm mt-2"
                                 (click)="RejectDepositRequest(depositrequest.id)">
                                 <mdb-icon fas icon="times"></mdb-icon>
                             </button>
                         </td>
 
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
 
+            </div>
         </div>
-    </div>
 
-</div>
+    </div>

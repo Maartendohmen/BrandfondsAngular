@@ -1,13 +1,16 @@
 <app-navbar [loggedinUser]="loggedinUser"></app-navbar>
 
-<app-admin-editsaldo [allusersstripes]="allusersstripes" (RefreshListOfUsers)="RefreshListOfUsers()">
+<app-admin-editsaldo [allusersstripes]="allusersstripes"
+    (RefreshListOfUsers)="RefreshListOfUsers()">
 </app-admin-editsaldo>
 
-<app-admin-editpunishmentstripe [alluserpunishmentstripes]="alluserpunishmentstripes"
+<app-admin-editpunishmentstripe
+    [alluserpunishmentstripes]="alluserpunishmentstripes"
     (RefreshListOfUsers)="RefreshListOfUsers()">
 </app-admin-editpunishmentstripe>
 
-<app-admin-depositrequest [alldepositrequests]="alldepositrequests" (RefreshListOfDeposits)="RefreshListOfDeposits()"
+<app-admin-depositrequest [alldepositrequests]="alldepositrequests"
+    (RefreshListOfDeposits)="RefreshListOfDeposits()"
     (RefreshListOfUsers)="RefreshListOfUsers()">
 </app-admin-depositrequest>
 

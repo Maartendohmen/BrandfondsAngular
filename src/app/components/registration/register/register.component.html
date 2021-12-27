@@ -3,53 +3,68 @@
 
     <div class="col-12 col-lg-6 offset-lg-3">
 
-            <mdb-card>
-                <mdb-card-body>
-                    <mdb-card-title>
-                        <h4>Registreren</h4>
-                    </mdb-card-title>
+        <mdb-card>
+            <mdb-card-body>
+                <mdb-card-title>
+                    <h4>Registreren</h4>
+                </mdb-card-title>
 
-                    <mdb-card-text>
-                        Vul a.u.b. onderstaande gegevens in.<br><br> Let erop dat je je echte naam en
-                        email opgeeft, zodat de brandmeester kan zien wie je bent.
-                        <br><br> Je email wordt tevens gebruikt voor verificatie.
-                    </mdb-card-text>
+                <mdb-card-text>
+                    Vul a.u.b. onderstaande gegevens in.<br><br> Let erop dat je
+                    je echte
+                    naam en
+                    email opgeeft, zodat de brandmeester kan zien wie je bent.
+                    <br><br> Je email wordt tevens gebruikt voor verificatie.
+                </mdb-card-text>
 
-                </mdb-card-body>
-            </mdb-card>
+            </mdb-card-body>
+        </mdb-card>
 
-            <form [formGroup]="registerForm" (ngSubmit)="onSubmitRegister()" class="form-group mt-3">
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmitRegister()"
+            class="form-group mt-3">
 
-                <div class="md-form md-bg">
-                  <input mdbInput mdbValidate formControlName="usermail_input" type="text" id="usermail_input" class="form-control"
-                  [ngClass]="{ 'is-invalid': submitted && f.usermail_input.errors }">
-                  <label for="usermail_input">Emailadres</label>
-                </div>
+            <div class="md-form md-bg">
+                <input mdbInput mdbValidate formControlName="usermail_input"
+                    type="text"
+                    id="usermail_input" class="form-control"
+                    [ngClass]="{ 'is-invalid': submitted &&
+                    f.usermail_input.errors }">
+                <label for="usermail_input">Emailadres</label>
+            </div>
 
-                <div class="md-form md-bg">
-                    <input mdbInput mdbValidate formControlName="forname_input" type="text" id="forname_input" class="form-control"
-                    [ngClass]="{ 'is-invalid': submitted && f.forname_input.errors }">
-                    <label for="forname_input">Voornaam</label>
-                  </div>
+            <div class="md-form md-bg">
+                <input mdbInput mdbValidate formControlName="forname_input"
+                    type="text"
+                    id="forname_input" class="form-control"
+                    [ngClass]="{ 'is-invalid': submitted &&
+                    f.forname_input.errors }">
+                <label for="forname_input">Voornaam</label>
+            </div>
 
-                  <div class="md-form md-bg">
-                    <input mdbInput mdbValidate formControlName="surname_input" type="text" id="surname_input" class="form-control"
-                    [ngClass]="{ 'is-invalid': submitted && f.surname_input.errors }">
-                    <label for="surname_input">Achternaam</label>
-                  </div>
+            <div class="md-form md-bg">
+                <input mdbInput mdbValidate formControlName="surname_input"
+                    type="text"
+                    id="surname_input" class="form-control"
+                    [ngClass]="{ 'is-invalid': submitted &&
+                    f.surname_input.errors }">
+                <label for="surname_input">Achternaam</label>
+            </div>
 
-                  <div class="md-form md-bg">
-                    <input mdbInput mdbValidate formControlName="password_input" type="password" id="password_input" class="form-control"
-                    [ngClass]="{ 'is-invalid': submitted && f.password_input.errors }">
-                    <label for="password_input">Wachtwoord</label>
-                  </div>
+            <div class="md-form md-bg">
+                <input mdbInput mdbValidate formControlName="password_input"
+                    type="password" id="password_input" class="form-control"
+                    [ngClass]="{ 'is-invalid': submitted &&
+                    f.password_input.errors }">
+                <label for="password_input">Wachtwoord</label>
+            </div>
 
-                <div class="form-group">
-                    <div *ngIf="error" class="alert alert-danger">{{error}}</div>
-                </div>
+            <div class="form-group">
+                <div *ngIf="error" class="alert alert-danger">{{error}}</div>
+            </div>
 
-                <button [disabled]="loading" class="btn-block" type="submit" mdbBtn color="primary" mdbWavesEffect>Bevestig</button>
-            </form>
+            <button [disabled]="loading" class="btn-block" type="submit" mdbBtn
+                color="primary" mdbWavesEffect>Bevestig</button>
+        </form>
 
     </div>
 </div>

@@ -1,37 +1,38 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { first } from 'rxjs/operators';
-import { AlertService } from '@full-fledged/alerts';
-import { AuthenticationControllerService } from 'src/app/api/services';
+import { Component, OnInit } from "@angular/core";
+import { Router } from "@angular/router";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { first } from "rxjs/operators";
+import { AlertService } from "@full-fledged/alerts";
+import { AuthenticationControllerService } from "src/app/api/services";
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  selector: "app-login",
+  templateUrl: "./login.component.html",
+  styleUrls: ["./login.component.css"],
 })
 export class LoginComponent implements OnInit {
-
   public loginForm: FormGroup;
 
   submitted = false;
   loading = false;
 
-  constructor(private router: Router,
+  constructor(
+    private router: Router,
     private formBuilder: FormBuilder,
     private authservice: AuthenticationControllerService,
-    private alertService: AlertService) { }
+    private alertService: AlertService
+  ) {}
 
   LogIn(e) {
-    this.router.navigateByUrl('main');
+    this.router.navigateByUrl("main");
   }
 
   ngOnInit() {
     localStorage.clear();
 
     this.loginForm = this.formBuilder.group({
-      usermail_input: ['', Validators.required],
-      password_input: ['', Validators.required]
+      usermail_input: ["", Validators.required],
+      password_input: ["", Validators.required],
     });
   }
 
@@ -40,7 +41,6 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmitLogin() {
-
     this.submitted = true;
 
     // stop here if form is invalid
@@ -53,37 +53,38 @@ export class LoginComponent implements OnInit {
 
     this.loading = true;
 
-    this.authservice.login({ mailadres, password })
+    this.authservice
+      .login({ mailadres, password })
       .pipe(first())
       .subscribe(
-        authresponse => {
+        (authresponse) => {
           if (authresponse != null) {
+            localStorage.setItem(
+              "current_user",
+              JSON.stringify(authresponse.user)
+            );
+            localStorage.setItem("jwt_token", JSON.stringify(authresponse.jwt));
 
-            localStorage.setItem('current_user', JSON.stringify(authresponse.user));
-            localStorage.setItem('jwt_token', JSON.stringify(authresponse.jwt))
-
-            if (authresponse.user.userRole == 'BRANDMASTER') {
-              this.router.navigateByUrl('admin')
+            if (authresponse.user.userRole == "BRANDMASTER") {
+              this.router.navigateByUrl("admin");
+            } else {
+              this.router.navigateByUrl("main");
             }
-            else {
-              this.router.navigateByUrl('main');
-            }
-
           }
         },
-        error => {
-
+        (error) => {
           this.alertService.danger(error.error.message);
 
           this.loading = false;
-        });
+        }
+      );
   }
 
   Register() {
-    this.router.navigateByUrl('register');
+    this.router.navigateByUrl("register");
   }
 
   ForgotPassword() {
-    this.router.navigateByUrl('resetpasswordrequest');
+    this.router.navigateByUrl("resetpasswordrequest");
   }
 }

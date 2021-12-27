@@ -1,16 +1,20 @@
-import { Component, OnInit, SimpleChange } from '@angular/core';
-import { NgbDateStruct, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
-import { AlertService } from '@full-fledged/alerts';
-import { User, StripesMonth } from 'src/app/api/models';
-import { UserControllerService, DayControllerService } from 'src/app/api/services';
+import { Component, OnInit, SimpleChange } from "@angular/core";
+import { NgbDateStruct, NgbCalendar } from "@ng-bootstrap/ng-bootstrap";
+import { AlertService } from "@full-fledged/alerts";
+import { User, StripesMonth } from "src/app/api/models";
+import {
+  UserControllerService,
+  DayControllerService,
+} from "src/app/api/services";
+import UserStripe from "src/app/_custom_interfaces/UserStripe";
+import { DomSanitizer } from "@angular/platform-browser";
 
 @Component({
-  selector: 'app-mainmenu',
-  templateUrl: './mainmenu.component.html',
-  styleUrls: ['./mainmenu.component.css']
+  selector: "app-mainmenu",
+  templateUrl: "./mainmenu.component.html",
+  styleUrls: ["./mainmenu.component.css"],
 })
 export class MainmenuComponent implements OnInit {
-
   //global param
   public loggedinUser: User;
   public groupstripesmenu: boolean = false;
@@ -25,7 +29,8 @@ export class MainmenuComponent implements OnInit {
   public allusers: User[];
 
   //Selected users with stripes for current day todo maybe wanna change this back to make use off userstripe interface, not sure yet
-  public selectedUsers: Map<User, number> = new Map();
+  // public selectedUsers: Map<User, number> = new Map();
+  public selectedGroupUserStripes: UserStripe[] = [];
 
   //Overview
   public saldoColor: string = null;
@@ -35,14 +40,16 @@ export class MainmenuComponent implements OnInit {
   //paymentrequest
   paid_amount: number;
 
-  constructor(private calendar: NgbCalendar,
+  constructor(
+    private calendar: NgbCalendar,
     private userService: UserControllerService,
     private dayService: DayControllerService,
-    private alertService: AlertService) { }
+    private _sanitizer: DomSanitizer,
+    private alertService: AlertService
+  ) {}
 
   ngOnInit() {
-
-    this.loggedinUser = JSON.parse(localStorage.getItem('current_user'));
+    this.loggedinUser = JSON.parse(localStorage.getItem("current_user"));
 
     this.onDateSelection(this.currentdate);
 
@@ -51,7 +58,6 @@ export class MainmenuComponent implements OnInit {
     this.RefreshSaldoFromUser();
     this.RefreshTotalStripesPerMonthFromUser();
   }
-
 
   /* #region  SetScreens */
   SetGroupScreen(e) {
@@ -66,87 +72,144 @@ export class MainmenuComponent implements OnInit {
   }
   /* #endregion */
 
-
   /* #region  Edit stripes */
   RemoveStripe(e) {
-
     if (this.personalstripesnumber > 0) {
-      this.dayService.removeStripeForUser({ id: this.loggedinUser.id, date: this.selectedDate.toUTCString() }).subscribe(data => {
-        this.dayService.getStripesForOneUser({ id: this.loggedinUser.id, date: this.selectedDate.toUTCString() }).subscribe(days => {
-          if (days[0]) { //if day still exist after striping
-            this.personalstripesnumber = days[0].stripes;
-          }
-          else {
-            this.personalstripesnumber = 0;
-          }
-
-          this.RefreshTotalStripesFromUser();
-          this.RefreshSaldoFromUser();
-          this.RefreshTotalStripesPerMonthFromUser();
+      this.dayService
+        .removeStripeForUser({
+          id: this.loggedinUser.id,
+          date: this.selectedDate.toUTCString(),
         })
-      });
+        .subscribe((data) => {
+          this.dayService
+            .getStripesForOneUser({
+              id: this.loggedinUser.id,
+              date: this.selectedDate.toUTCString(),
+            })
+            .subscribe((days) => {
+              if (days[0]) {
+                //if day still exist after striping
+                this.personalstripesnumber = days[0].stripes;
+              } else {
+                this.personalstripesnumber = 0;
+              }
+
+              this.RefreshTotalStripesFromUser();
+              this.RefreshSaldoFromUser();
+              this.RefreshTotalStripesPerMonthFromUser();
+            });
+        });
     }
   }
 
   AddStripe(e) {
-
-    this.dayService.addStripeForUser({ id: this.loggedinUser.id, date: this.selectedDate.toUTCString() }).subscribe(data => {
-      this.dayService.getStripesForOneUser({ id: this.loggedinUser.id, date: this.selectedDate.toUTCString() }).subscribe(days => {
-        this.personalstripesnumber = days[0].stripes;
-
-        this.RefreshTotalStripesFromUser();
-        this.RefreshSaldoFromUser();
-        this.RefreshTotalStripesPerMonthFromUser();
+    this.dayService
+      .addStripeForUser({
+        id: this.loggedinUser.id,
+        date: this.selectedDate.toUTCString(),
       })
-    });
+      .subscribe((data) => {
+        this.dayService
+          .getStripesForOneUser({
+            id: this.loggedinUser.id,
+            date: this.selectedDate.toUTCString(),
+          })
+          .subscribe((days) => {
+            this.personalstripesnumber = days[0].stripes;
 
+            this.RefreshTotalStripesFromUser();
+            this.RefreshSaldoFromUser();
+            this.RefreshTotalStripesPerMonthFromUser();
+          });
+      });
   }
   /* #endregion */
 
   onDateSelection(date: NgbDateStruct) {
-
     this.selectedDate = new Date(date.year, date.month, date.day);
 
     //correction for month enum starting at 0
     this.selectedDate.setMonth(this.selectedDate.getMonth() - 1);
 
-    this.dayService.getStripesForOneUser({ id: this.loggedinUser.id, date: this.selectedDate.toUTCString() }).subscribe(days => {
-      if (days[0]) { //if day still exist after striping
-        this.personalstripesnumber = days[0].stripes;
-      }
-      else {
-        this.personalstripesnumber = 0;
-      }
-    })
+    this.dayService
+      .getStripesForOneUser({
+        id: this.loggedinUser.id,
+        date: this.selectedDate.toUTCString(),
+      })
+      .subscribe((days) => {
+        if (days[0]) {
+          //if day still exist after striping
+          this.personalstripesnumber = days[0].stripes;
+        } else {
+          this.personalstripesnumber = 0;
+        }
+      });
   }
-
 
   /* #region  Add/Remove user to group */
   AddToGroup(e) {
-
     //check if user is correctly selected and not already in group
-    if (this.selectedUserID != undefined && Array.from(this.selectedUsers.keys()).find(x => x.id == this.selectedUserID) == undefined) {
-
-      var selecteduser = this.allusers.find(x => x.id == this.selectedUserID);
+    if (
+      this.selectedUserID != undefined &&
+      this.selectedGroupUserStripes.find(
+        (userToCheck) => userToCheck.user.id == this.selectedUserID
+      ) == undefined
+    ) {
+      var selecteduser = this.allusers.find((x) => x.id == this.selectedUserID);
 
       //determain stripe count on current day
-      this.dayService.getStripesForOneUser({ id: selecteduser.id, date: this.selectedDate.toString() }).subscribe(days => {
-
-        if (days[0]) {
-          //add user to list
-          this.selectedUsers.set(selecteduser, days[0].stripes);
-        }
-        else {
-          this.selectedUsers.set(selecteduser, 0);
-        }
-      });
-
-
-
+      this.dayService
+        .getStripesForOneUser({
+          id: selecteduser.id,
+          date: this.selectedDate.toString(),
+        })
+        .subscribe((days) => {
+          this.userService
+            .getUserProfilePictureUsingGET(selecteduser.id)
+            .subscribe(
+              (profilePicture) => {
+                var sanitedProfilePicture = this._sanitizer.bypassSecurityTrustResourceUrl(
+                  "data:image/jpg;base64," + profilePicture
+                );
+                if (days[0]) {
+                  //add user to list
+                  this.selectedGroupUserStripes.push({
+                    user: selecteduser,
+                    stripetotal: days[0].stripes,
+                    profilePicture: sanitedProfilePicture,
+                  });
+                } else {
+                  this.selectedGroupUserStripes.push({
+                    user: selecteduser,
+                    stripetotal: 0,
+                    profilePicture: sanitedProfilePicture,
+                  });
+                }
+              },
+              (error) => {
+                if (days[0]) {
+                  //add user to list
+                  this.selectedGroupUserStripes.push({
+                    user: selecteduser,
+                    stripetotal: days[0].stripes,
+                  });
+                } else {
+                  this.selectedGroupUserStripes.push({
+                    user: selecteduser,
+                    stripetotal: 0,
+                  });
+                }
+              }
+            );
+        });
     }
     //user is already in group
-    else if (Array.from(this.selectedUsers.keys()).find(x => x.id == this.selectedUserID) != undefined) {
-      this.alertService.warning('Deze gebruiker is al toegevoegd')
+    else if (
+      this.selectedGroupUserStripes.find(
+        (userToCheck) => userToCheck.user.id == this.selectedUserID
+      )
+    ) {
+      this.alertService.warning("Deze gebruiker is al toegevoegd");
     }
     //user is not selected
     else {
@@ -155,9 +218,11 @@ export class MainmenuComponent implements OnInit {
   }
 
   RemoveFromGroup(userdid: number) {
-    var selecteduser = Array.from(this.selectedUsers.keys()).find(x => x.id == userdid);
+    var indexToDelete = this.selectedGroupUserStripes.findIndex(
+      (userStripe) => userStripe.user.id == userdid
+    );
 
-    this.selectedUsers.delete(selecteduser);
+    this.selectedGroupUserStripes.splice(indexToDelete);
   }
   /* #endregion */
 
@@ -167,20 +232,31 @@ export class MainmenuComponent implements OnInit {
    * @param user User to which stripe will be added
    */
   AddGroupStripe(user: User) {
+    this.dayService
+      .addStripeForUser({ id: user.id, date: this.selectedDate.toUTCString() })
+      .subscribe((data) => {
+        this.dayService
+          .getStripesForOneUser({
+            id: user.id,
+            date: this.selectedDate.toUTCString(),
+          })
+          .subscribe((days) => {
+            var indexToChange = this.selectedGroupUserStripes.findIndex(
+              (userStripe) => userStripe.user.id == user.id
+            );
+            this.selectedGroupUserStripes[indexToChange] = {
+              user: user,
+              stripetotal: days[0].stripes,
+            };
 
-    this.dayService.addStripeForUser({ id: user.id, date: this.selectedDate.toUTCString() }).subscribe(data => {
-      this.dayService.getStripesForOneUser({ id: user.id, date: this.selectedDate.toUTCString() }).subscribe(days => {
-
-        this.selectedUsers.set(user, days[0].stripes)
-
-        //update own values after transaction
-        if (user.id === this.loggedinUser.id) {
-          this.RefreshTotalStripesFromUser();
-          this.RefreshSaldoFromUser();
-          this.RefreshTotalStripesPerMonthFromUser();
-        }
-      })
-    });
+            //update own values after transaction
+            if (user.id === this.loggedinUser.id) {
+              this.RefreshTotalStripesFromUser();
+              this.RefreshSaldoFromUser();
+              this.RefreshTotalStripesPerMonthFromUser();
+            }
+          });
+      });
   }
 
   /**
@@ -188,25 +264,45 @@ export class MainmenuComponent implements OnInit {
    * @param user user which stripe will be deleted
    */
   RemoveGroupStripe(user: User) {
+    var indexSelected = this.selectedGroupUserStripes.findIndex(
+      (userStripe) => userStripe.user.id == user.id
+    );
+    var userSelected = this.selectedGroupUserStripes[indexSelected];
 
-    if (this.selectedUsers.get(user) > 0) {
-      this.dayService.removeStripeForUser({ id: user.id, date: this.selectedDate.toUTCString() }).subscribe(data => {
-        this.dayService.getStripesForOneUser({ id: user.id, date: this.selectedDate.toUTCString() }).subscribe(days => {
-          if (days[0]) { //if day still exist after striping
-            this.selectedUsers.set(user, days[0].stripes)
-          }
-          else {
-            this.selectedUsers.set(user, 0)
+    if (userSelected.stripetotal > 0) {
+      this.dayService
+        .removeStripeForUser({
+          id: user.id,
+          date: this.selectedDate.toUTCString(),
+        })
+        .subscribe((data) => {
+          this.dayService
+            .getStripesForOneUser({
+              id: user.id,
+              date: this.selectedDate.toUTCString(),
+            })
+            .subscribe((days) => {
+              if (days[0]) {
+                //if day still exist after striping
+                this.selectedGroupUserStripes[indexSelected] = {
+                  user: user,
+                  stripetotal: days[0].stripes,
+                };
+              } else {
+                this.selectedGroupUserStripes[indexSelected] = {
+                  user: user,
+                  stripetotal: 0,
+                };
+              }
+            });
+
+          //update own values after transaction
+          if (user.id === this.loggedinUser.id) {
+            this.RefreshTotalStripesFromUser();
+            this.RefreshSaldoFromUser();
+            this.RefreshTotalStripesPerMonthFromUser();
           }
         });
-
-        //update own values after transaction
-        if (user.id === this.loggedinUser.id) {
-          this.RefreshTotalStripesFromUser();
-          this.RefreshSaldoFromUser();
-          this.RefreshTotalStripesPerMonthFromUser();
-        }
-      });
     }
   }
   /* #endregion */
@@ -216,12 +312,11 @@ export class MainmenuComponent implements OnInit {
    * Refresh list of all available users
    */
   RefreshAllUsers() {
-    this.userService.getAllUsers().subscribe(data => {
-
+    this.userService.getAllUsers().subscribe((data) => {
       data.sort(function (a, b) {
         var name1 = a.forname.toUpperCase();
         var name2 = b.forname.toUpperCase();
-        return (name1 < name2) ? -1 : (name1 > name2) ? 1 : 0;
+        return name1 < name2 ? -1 : name1 > name2 ? 1 : 0;
       });
 
       this.allusers = data;
@@ -232,18 +327,31 @@ export class MainmenuComponent implements OnInit {
    * Refreshes the number of stripes for current data for loggedin user
    */
   RefreshOwnTodayStripes() {
+    var indexSelected = this.selectedGroupUserStripes.findIndex(
+      (userStripe) => userStripe.user.id == this.loggedinUser.id
+    );
+    var userSelected = this.selectedGroupUserStripes[indexSelected];
 
-    if (Array.from(this.selectedUsers.keys()).find(x => x.id == this.loggedinUser.id) != undefined) {
-      var selecteduser = Array.from(this.selectedUsers.keys()).find(x => x.id == this.loggedinUser.id);
-      this.dayService.getStripesForOneUser({ id: selecteduser.id, date: this.selectedDate.toUTCString() }).subscribe(days => {
-        if (days[0]) { //if day still exist after striping
-          this.selectedUsers.set(selecteduser, days[0].stripes)
-        }
-        else {
-          this.selectedUsers.set(selecteduser, 0)
-        }
-
-      });
+    if (userSelected) {
+      this.dayService
+        .getStripesForOneUser({
+          id: userSelected.user.id,
+          date: this.selectedDate.toUTCString(),
+        })
+        .subscribe((days) => {
+          if (days[0]) {
+            //if day still exist after striping
+            this.selectedGroupUserStripes[indexSelected] = {
+              user: userSelected.user,
+              stripetotal: days[0].stripes,
+            };
+          } else {
+            this.selectedGroupUserStripes[indexSelected] = {
+              user: userSelected.user,
+              stripetotal: 0,
+            };
+          }
+        });
     }
   }
 
@@ -251,69 +359,75 @@ export class MainmenuComponent implements OnInit {
    * Refreshes the current total stripes from user
    */
   RefreshTotalStripesFromUser() {
-    this.dayService.getTotalStripesForUser(this.loggedinUser.id).subscribe(data => {
-      this.totalStripes = data;
-    });
+    this.dayService
+      .getTotalStripesForUser(this.loggedinUser.id)
+      .subscribe((data) => {
+        this.totalStripes = data;
+      });
   }
 
   /**
    * Refreshes the saldo from the logged in user
    */
   RefreshSaldoFromUser() {
-    this.userService.getSaldoFromUser(this.loggedinUser.id).subscribe(data => {
+    this.userService
+      .getSaldoFromUser(this.loggedinUser.id)
+      .subscribe((data) => {
+        this.loggedinUser.saldo = data;
 
-      this.loggedinUser.saldo = data;
-
-      if (this.loggedinUser.saldo < 0) {
-        this.saldoColor = 'red'
-      }
-      else {
-        this.saldoColor = 'green'
-      }
-
-    });
-
+        if (this.loggedinUser.saldo < 0) {
+          this.saldoColor = "red";
+        } else {
+          this.saldoColor = "green";
+        }
+      });
   }
-
 
   RefreshTotalStripesPerMonthFromUser() {
     this.totalstripesPerMonth = [];
-    this.dayService.getTotalStripesForUserPerMonth(this.loggedinUser.id).subscribe(data => {
-
-      data.forEach((stripemonth) => {
-        this.totalstripesPerMonth.push({ date: stripemonth.date, stripeamount: stripemonth.stripeamount });
+    this.dayService
+      .getTotalStripesForUserPerMonth(this.loggedinUser.id)
+      .subscribe((data) => {
+        data.forEach((stripemonth) => {
+          this.totalstripesPerMonth.push({
+            date: stripemonth.date,
+            stripeamount: stripemonth.stripeamount,
+          });
+        });
       });
-
-    });
   }
   /* #endregion */
 
-
   NotifyOfPayment() {
-
     if (this.paid_amount) {
       var inputsaldo = null;
 
       var paid_amount = this.paid_amount.toString();
 
-      if (paid_amount.includes(',')) {
-        inputsaldo = +paid_amount.replace(/,/g, '');
-      }
-      else {
+      if (paid_amount.includes(",")) {
+        inputsaldo = +paid_amount.replace(/,/g, "");
+      } else {
         inputsaldo = +paid_amount * 100;
       }
 
-      this.userService.createDepositRequest({ id: this.loggedinUser.id, amount: inputsaldo }).subscribe(result => {
-        this.alertService.success('Je verzoek is naar de brandmeester gestuurd');
-        this.paid_amount = null;
-      }, error => {
-        this.alertService.danger(error.error.message);
-        this.paid_amount = null;
-      });
+      this.userService
+        .createDepositRequest({ id: this.loggedinUser.id, amount: inputsaldo })
+        .subscribe(
+          (result) => {
+            this.alertService.success(
+              "Je verzoek is naar de brandmeester gestuurd"
+            );
+            this.paid_amount = null;
+          },
+          (error) => {
+            this.alertService.danger(error.error.message);
+            this.paid_amount = null;
+          }
+        );
+    } else {
+      this.alertService.warning(
+        "Vul a.u.b het bedrag in wat je overgemaakt hebt"
+      );
     }
-    else {
-      this.alertService.warning('Vul a.u.b het bedrag in wat je overgemaakt hebt');
-    }
-
   }
 }

@@ -1,0 +1,5 @@
+.img-fluid, .video-fluid {
+    max-width: 40px;
+    height: auto;
+    margin-right: 5px;
+}
