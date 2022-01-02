@@ -26,12 +26,20 @@ export class NavbarComponent implements OnInit {
 
   getProfilePicture(): void {
     this.userControllerService
-      .getUserProfilePictureUsingGET(this.loggedinUser.id)
-      .subscribe((encodedImage) => {
-        this.profilePicture = this._sanitizer.bypassSecurityTrustResourceUrl(
-          "data:image/jpg;base64," + encodedImage
-        );
-      });
+      .getUserProfilePicture(this.loggedinUser.id)
+      .subscribe(
+        (encodedImage) => {
+          this.profilePicture = this._sanitizer.bypassSecurityTrustResourceUrl(
+            "data:image/jpg;base64," + encodedImage
+          );
+        },
+        (error) => {
+          if (error.status != 404) {
+            console.log(error);
+          }
+          // Do nothing, user has not uploaded any images yet
+        }
+      );
   }
 
   navigateToProfilePage() {

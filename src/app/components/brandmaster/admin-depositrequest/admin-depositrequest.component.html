@@ -11,7 +11,7 @@
                 <thead class="black white-text">
                     <tr>
                         <th [mdbTableSort]="alldepositrequests"
-                            sortBy="user.forname">Naam</th>
+                            sortBy="user.forename">Naam</th>
                         <th [mdbTableSort]="alldepositrequests" sortBy="amount">Inleg
                             (€)</th>
                         <th [mdbTableSort]="alldepositrequests"
@@ -23,7 +23,7 @@
 
                     <tr *ngFor="let depositrequest of alldepositrequests;">
 
-                        <th style="width: 30%" scope="row">{{depositrequest.user.forname}}
+                        <th style="width: 30%" scope="row">{{depositrequest.user.forename}}
                             {{depositrequest.user.surname}}</th>
                         <td style="width: 25%">
                             {{depositrequest.amount/100 | number:'.2'}}

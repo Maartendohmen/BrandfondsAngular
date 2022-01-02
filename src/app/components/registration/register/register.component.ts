@@ -28,7 +28,7 @@ export class RegisterComponent implements OnInit {
   ngOnInit() {
     this.registerForm = this.formBuilder.group({
       usermail_input: ["", Validators.required],
-      forname_input: ["", Validators.required],
+      forename_input: ["", Validators.required],
       surname_input: ["", Validators.required],
       password_input: ["", Validators.required],
     });
@@ -49,8 +49,8 @@ export class RegisterComponent implements OnInit {
     this.loading = true;
 
     const registerUser: User = {
-      emailadres: this.f.usermail_input.value,
-      forname: this.titlecasePipe.transform(this.f.forname_input.value),
+      mailadres: this.f.usermail_input.value,
+      forename: this.titlecasePipe.transform(this.f.forename_input.value),
       surname: this.titlecasePipe.transform(this.f.surname_input.value),
       password: this.f.password_input.value,
     };
@@ -62,7 +62,13 @@ export class RegisterComponent implements OnInit {
         );
       },
       (error) => {
-        this.alertService.danger(error.error.message);
+        if (error.status == 409) {
+          this.alertService.danger(
+            "Er bestaat al een gebruiker met dit mailadres"
+          );
+        } else {
+          this.alertService.danger(error.error.message);
+        }
         this.loading = false;
       }
     );

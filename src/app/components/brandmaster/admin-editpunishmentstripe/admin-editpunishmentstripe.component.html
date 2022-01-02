@@ -19,7 +19,7 @@
                 striped="true">
                 <thead class="black white-text">
                     <tr>
-                        <th [mdbTableSort]="datasource" sortBy="user.forname">Naam</th>
+                        <th [mdbTableSort]="datasource" sortBy="user.forename">Naam</th>
                         <th [mdbTableSort]="datasource" sortBy="stripetotal">Bijgestreept</th>
                         <th [mdbTableSort]="datasource" sortBy="stripetotal">Bedrag
                             (€)</th>
@@ -29,7 +29,7 @@
 
                     <tr *ngFor="let userstripe of datasource;">
 
-                        <th style="width: 40%" scope="row">{{userstripe.user.forname}}
+                        <th style="width: 40%" scope="row">{{userstripe.user.forename}}
                             {{userstripe.user.surname}}</th>
                         <td style="width: 25%" contenteditable="true"
                             (click)="SetSelectedAmount($event.target.textContent)"

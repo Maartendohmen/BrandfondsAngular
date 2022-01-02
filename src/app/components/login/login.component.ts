@@ -73,8 +73,13 @@ export class LoginComponent implements OnInit {
           }
         },
         (error) => {
-          this.alertService.danger(error.error.message);
-
+          if (error.status == 404) {
+            this.alertService.danger(
+              "De gebruikersnaam of wachtwoord is incorrect"
+            );
+          } else {
+            this.alertService.danger(error.error.message);
+          }
           this.loading = false;
         }
       );

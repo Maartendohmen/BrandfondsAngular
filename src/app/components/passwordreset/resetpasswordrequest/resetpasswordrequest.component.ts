@@ -52,7 +52,11 @@ export class ResetpasswordrequestComponent implements OnInit {
         (error) => {
           this.loading = false;
 
-          if (error.error.message) {
+          if (error.status == 404) {
+            this.alertService.danger(
+              "Er kan geen gebruiker met dit mailadres worden gevonden"
+            );
+          } else {
             this.alertService.danger(error.error.message);
           }
         }

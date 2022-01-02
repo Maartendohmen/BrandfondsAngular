@@ -31,7 +31,6 @@ export class ProfileComponent implements OnInit {
     this.imageChangedEvent = event;
 
     this.imageType = event.target.files[0].type;
-    console.log(this.imageType);
 
     if (this.imageType != "image/jpeg" && this.imageType != "image/png") {
       this.alertService.danger(
@@ -54,7 +53,7 @@ export class ProfileComponent implements OnInit {
     var fileToUpload = this.blobToFile(blob, "temp_file");
 
     this.userService
-      .setUserProfilePictureUsingPOST({
+      .setUserProfilePicture({
         id: this.loggedinUserId,
         file: fileToUpload,
       })

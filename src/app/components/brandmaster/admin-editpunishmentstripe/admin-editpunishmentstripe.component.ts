@@ -39,7 +39,7 @@ export class AdminEditpunishmentstripeComponent implements OnInit {
     if (value) {
       var copylist: UserStripe[] = this.alluserpunishmentstripes.filter(
         (userstripe) =>
-          userstripe.user.forname
+          userstripe.user.forename
             .toLocaleLowerCase()
             .includes(value.toLocaleLowerCase()) ||
           userstripe.user.surname

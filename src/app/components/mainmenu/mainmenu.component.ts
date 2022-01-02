@@ -164,43 +164,41 @@ export class MainmenuComponent implements OnInit {
           date: this.selectedDate.toString(),
         })
         .subscribe((days) => {
-          this.userService
-            .getUserProfilePictureUsingGET(selecteduser.id)
-            .subscribe(
-              (profilePicture) => {
-                var sanitedProfilePicture = this._sanitizer.bypassSecurityTrustResourceUrl(
-                  "data:image/jpg;base64," + profilePicture
-                );
-                if (days[0]) {
-                  //add user to list
-                  this.selectedGroupUserStripes.push({
-                    user: selecteduser,
-                    stripetotal: days[0].stripes,
-                    profilePicture: sanitedProfilePicture,
-                  });
-                } else {
-                  this.selectedGroupUserStripes.push({
-                    user: selecteduser,
-                    stripetotal: 0,
-                    profilePicture: sanitedProfilePicture,
-                  });
-                }
-              },
-              (error) => {
-                if (days[0]) {
-                  //add user to list
-                  this.selectedGroupUserStripes.push({
-                    user: selecteduser,
-                    stripetotal: days[0].stripes,
-                  });
-                } else {
-                  this.selectedGroupUserStripes.push({
-                    user: selecteduser,
-                    stripetotal: 0,
-                  });
-                }
+          this.userService.getUserProfilePicture(selecteduser.id).subscribe(
+            (profilePicture) => {
+              var sanitedProfilePicture = this._sanitizer.bypassSecurityTrustResourceUrl(
+                "data:image/jpg;base64," + profilePicture
+              );
+              if (days[0]) {
+                //add user to list
+                this.selectedGroupUserStripes.push({
+                  user: selecteduser,
+                  stripetotal: days[0].stripes,
+                  profilePicture: sanitedProfilePicture,
+                });
+              } else {
+                this.selectedGroupUserStripes.push({
+                  user: selecteduser,
+                  stripetotal: 0,
+                  profilePicture: sanitedProfilePicture,
+                });
               }
-            );
+            },
+            (error) => {
+              if (days[0]) {
+                //add user to list
+                this.selectedGroupUserStripes.push({
+                  user: selecteduser,
+                  stripetotal: days[0].stripes,
+                });
+              } else {
+                this.selectedGroupUserStripes.push({
+                  user: selecteduser,
+                  stripetotal: 0,
+                });
+              }
+            }
+          );
         });
     }
     //user is already in group
@@ -314,8 +312,8 @@ export class MainmenuComponent implements OnInit {
   RefreshAllUsers() {
     this.userService.getAllUsers().subscribe((data) => {
       data.sort(function (a, b) {
-        var name1 = a.forname.toUpperCase();
-        var name2 = b.forname.toUpperCase();
+        var name1 = a.forename.toUpperCase();
+        var name2 = b.forename.toUpperCase();
         return name1 < name2 ? -1 : name1 > name2 ? 1 : 0;
       });
 

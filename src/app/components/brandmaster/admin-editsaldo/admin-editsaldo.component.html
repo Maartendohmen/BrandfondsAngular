@@ -8,33 +8,40 @@
             <hr class="my-2">
 
             <div class="md-form md-outline">
-                <input placeholder="Zoek op gebruiker naam" mdbInput type="text" id="searchuser_input"
-                    class="form-control" (input)="onNameChange($event.target.value)">
+                <input placeholder="Zoek op gebruiker naam" mdbInput type="text"
+                    id="searchuser_input"
+                    class="form-control"
+                    (input)="onNameChange($event.target.value)">
             </div>
 
 
-            <table mdbTable mdbTableScroll scrollY="true" maxHeight="300" striped="true">
+            <table mdbTable mdbTableScroll scrollY="true" maxHeight="300"
+                striped="true">
                 <thead class="black white-text">
                     <tr>
-                        <th [mdbTableSort]="datasource" sortBy="user.forname">Naam</th>
-                        <th [mdbTableSort]="datasource" sortBy="user.saldo">Saldo (€)</th>
-                        <th [mdbTableSort]="datasource" sortBy="stripetotal">Totaal aantal strepen</th>
+                        <th [mdbTableSort]="datasource" sortBy="user.forename">Naam</th>
+                        <th [mdbTableSort]="datasource" sortBy="user.saldo">Saldo
+                            (€)</th>
+                        <th [mdbTableSort]="datasource" sortBy="stripetotal">Totaal
+                            aantal strepen</th>
                     </tr>
                 </thead>
                 <tbody>
 
                     <tr *ngFor="let userstripe of datasource;">
 
-                        <th style="width: 40%" scope="row">{{userstripe.user.forname}} {{userstripe.user.surname}}</th>
+                        <th style="width: 40%" scope="row">{{userstripe.user.forename}}
+                            {{userstripe.user.surname}}</th>
                         <td style="width: 25%" contenteditable="true"
                             (click)="SetSelectedAmount($event.target.textContent)"
-                            (blur)="SaveSaldo(userstripe, $event.target.textContent)">
+                            (blur)="SaveSaldo(userstripe,
+                            $event.target.textContent)">
                             {{userstripe.user.saldo/100 | number:'.2'}}
                         </td>
                         <td style="width: 35%">{{userstripe.stripetotal}}</td>
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
 
+            </div>
         </div>
     </div>
-</div>

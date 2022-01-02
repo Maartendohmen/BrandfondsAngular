@@ -32,8 +32,12 @@ export class RegisterconformationComponent implements OnInit {
           }, 7000);
         },
         (error) => {
-          if (error.error.type == "LinkExpiredException") {
+          if (error.status == 404) {
             this.router.navigateByUrl("/");
+            this.alertService.danger(
+              "De gebruikte link is ongeldig of verlopen"
+            );
+          } else {
             this.alertService.danger(error.error.message);
           }
         }

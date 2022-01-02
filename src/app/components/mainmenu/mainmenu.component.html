@@ -97,7 +97,7 @@
                                 disabled>Selecteer mensen</option>
                             <option *ngFor="let user of allusers"
                                 [value]="user.id">
-                                {{user.forname}} {{user.surname}} </option>
+                                {{user.forename}} {{user.surname}} </option>
                         </select>
                     </div>
 
@@ -129,7 +129,7 @@
                             </ng-template>
                         </div>
                         <div class="col-2 align-self-center text-left">
-                            <h5>{{userStripe.user.forname}}</h5>
+                            <h5>{{userStripe.user.forename}}</h5>
                         </div>
                         <div class="col-5 align-self-center text-right">
                             <mdb-icon fas icon="minus-circle" size="2x mr-2"
@@ -143,7 +143,7 @@
                         <div class="col-2">
                             <mdb-icon fas icon="trash" size="2x"
                                 class="float-right"
-                                (click)="RemoveFromGroup(userStripe.user.forname)">
+                                (click)="RemoveFromGroup(userStripe.user.forename)">
                             </mdb-icon>
                         </div>
                     </div>

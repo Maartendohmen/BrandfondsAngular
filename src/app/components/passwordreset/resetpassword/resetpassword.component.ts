@@ -34,8 +34,14 @@ export class ResetpasswordComponent implements OnInit {
         .subscribe(
           (active) => {},
           (error) => {
-            this.router.navigateByUrl("/");
-            this.alertService.danger(error.error.message);
+            if (error.status == 401) {
+              this.router.navigateByUrl("/");
+              this.alertService.danger(
+                "De link die je probeert te gebruiken bestaat niet of is verlopen"
+              );
+            } else {
+              this.alertService.danger(error.error.message);
+            }
           }
         );
     });

@@ -34,8 +34,12 @@ export class RegistrationActivationComponent implements OnInit {
             }, 7000);
           },
           (error) => {
-            if (error.error.type == "NotFoundException") {
+            if (error.status == 404) {
               this.router.navigateByUrl("/");
+              this.alertService.danger(
+                "De gebruiker die je wilt activeren staat niet meer in het systeem"
+              );
+            } else {
               this.alertService.danger(error.error.message);
             }
           }
