@@ -63,7 +63,7 @@ export class AdminEditpunishmentstripeComponent implements OnInit {
 
         if (changedamount > 0) {
           this.dayservice
-            .addMultipeStripesForUser({
+            .addStripesForUser({
               id: selectedUser.user.id,
               date: new Date(1900, 1).toUTCString(),
               amount: changedamount,

@@ -76,7 +76,7 @@ export class MainmenuComponent implements OnInit {
   RemoveStripe(e) {
     if (this.personalstripesnumber > 0) {
       this.dayService
-        .removeStripeForUser({
+        .removeStripesForUser({
           id: this.loggedinUser.id,
           date: this.selectedDate.toUTCString(),
         })
@@ -104,7 +104,7 @@ export class MainmenuComponent implements OnInit {
 
   AddStripe(e) {
     this.dayService
-      .addStripeForUser({
+      .addStripesForUser({
         id: this.loggedinUser.id,
         date: this.selectedDate.toUTCString(),
       })
@@ -166,9 +166,10 @@ export class MainmenuComponent implements OnInit {
         .subscribe((days) => {
           this.userService.getUserProfilePicture(selecteduser.id).subscribe(
             (profilePicture) => {
-              var sanitedProfilePicture = this._sanitizer.bypassSecurityTrustResourceUrl(
-                "data:image/jpg;base64," + profilePicture
-              );
+              var sanitedProfilePicture =
+                this._sanitizer.bypassSecurityTrustResourceUrl(
+                  "data:image/jpg;base64," + profilePicture
+                );
               if (days[0]) {
                 //add user to list
                 this.selectedGroupUserStripes.push({
@@ -231,7 +232,7 @@ export class MainmenuComponent implements OnInit {
    */
   AddGroupStripe(user: User) {
     this.dayService
-      .addStripeForUser({ id: user.id, date: this.selectedDate.toUTCString() })
+      .addStripesForUser({ id: user.id, date: this.selectedDate.toUTCString() })
       .subscribe((data) => {
         this.dayService
           .getStripesForOneUser({
@@ -239,13 +240,9 @@ export class MainmenuComponent implements OnInit {
             date: this.selectedDate.toUTCString(),
           })
           .subscribe((days) => {
-            var indexToChange = this.selectedGroupUserStripes.findIndex(
-              (userStripe) => userStripe.user.id == user.id
-            );
-            this.selectedGroupUserStripes[indexToChange] = {
-              user: user,
-              stripetotal: days[0].stripes,
-            };
+            this.selectedGroupUserStripes.find(
+              (x) => x.user.id == user.id
+            ).stripetotal = days[0].stripes;
 
             //update own values after transaction
             if (user.id === this.loggedinUser.id) {
@@ -269,7 +266,7 @@ export class MainmenuComponent implements OnInit {
 
     if (userSelected.stripetotal > 0) {
       this.dayService
-        .removeStripeForUser({
+        .removeStripesForUser({
           id: user.id,
           date: this.selectedDate.toUTCString(),
         })
@@ -280,17 +277,15 @@ export class MainmenuComponent implements OnInit {
               date: this.selectedDate.toUTCString(),
             })
             .subscribe((days) => {
+              var userToUpdate = this.selectedGroupUserStripes.find(
+                (x) => x.user.id == user.id
+              );
+
               if (days[0]) {
                 //if day still exist after striping
-                this.selectedGroupUserStripes[indexSelected] = {
-                  user: user,
-                  stripetotal: days[0].stripes,
-                };
+                userToUpdate.stripetotal = days[0].stripes;
               } else {
-                this.selectedGroupUserStripes[indexSelected] = {
-                  user: user,
-                  stripetotal: 0,
-                };
+                userToUpdate.stripetotal = 0;
               }
             });
 
